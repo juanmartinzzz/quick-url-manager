@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Dashboard</title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: white;
+            min-height: 100vh;
+            padding: 20px;
+            color: black;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid black;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: black;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            color: black;
+            font-size: 1.1rem;
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dashboard {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: white;
+            border: 2px solid black;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid black;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .group-card {
+            background: white;
+            border: 3px solid black;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .group-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: black;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .group-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .url-item {
+            background: white;
+            border: 1px solid black;
+            padding: 15px;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .url-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .url-title {
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+            word-break: break-all;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+        }
+
+        .url-title:hover {
+            text-decoration: none;
+            background: black;
+            color: white;
+        }
+
+        .labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .label {
+            background: white;
+            color: black;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            border: 1px solid black;
+            display: inline-block;
+            margin-right: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: black;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid black;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            background: #f0f0f0;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: 2px solid black;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: white;
+            color: black;
+        }
+
+        .btn:hover {
+            background: black;
+            color: white;
+        }
+
+        /* Apply background tones to interactive elements for subtle accents */
+        .url-title:hover {
+            background: var(--bg-blue);
+            color: black;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            background: var(--bg-blue);
+            border-color: var(--main-blue);
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: var(--bg-blue);
+            border-color: var(--main-blue);
+        }
+
+        .order-input:focus {
+            outline: none;
+            background: var(--bg-purple);
+            border-color: var(--main-purple);
+        }
+
+        /* Subtle background tone accents */
+        .card h3 {
+            border-bottom: 2px solid var(--main-blue);
+            padding-bottom: 8px;
+        }
+
+        .modal-title {
+            border-bottom: 2px solid var(--main-green);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Add subtle background tones to different sections */
+        .sidebar {
+            background: var(--bg-blue);
+        }
+
+        .group-card {
+            background: var(--bg-green);
+        }
+
+        .url-item {
+            background: white;
+        }
+
+        .url-item:hover {
+            background: var(--bg-purple);
+        }
+
+        .btn-primary {
+            background: white;
+            color: black;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: black;
+        }
+
+        .btn-success {
+            background: white;
+            color: black;
+        }
+
+        .btn-danger {
+            background: white;
+            color: black;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        /* Enhanced Color Palette - Main vs Background Tones */
+        :root {
+            /* Main tones - darker, more saturated for primary elements */
+            --main-blue: #4A90E2;
+            --main-green: #7ED321;
+            --main-red: #D0021B;
+            --main-purple: #9013FE;
+            --main-orange: #F5A623;
+            --main-pink: #E91E63;
+
+            /* Background tones - lighter, pastel for accents and backgrounds */
+            --bg-blue: #E8F4FD;
+            --bg-green: #F0F9E6;
+            --bg-red: #FDECEA;
+            --bg-purple: #F5F0FF;
+            --bg-orange: #FEF7E6;
+            --bg-pink: #FDF0F4;
+        }
+
+        .lucide-icon {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            margin-right: 4px;
+            stroke-width: 2;
+        }
+
+        .lucide-icon-large {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin-right: 8px;
+            stroke-width: 2;
+        }
+
+        /* Icon colors - Main tones for high contrast */
+        .icon-link { color: var(--main-blue); }
+        .icon-plus { color: var(--main-green); }
+        .icon-edit { color: var(--main-purple); }
+        .icon-trash { color: var(--main-red); }
+        .icon-upload { color: var(--main-orange); }
+        .icon-download { color: var(--main-pink); }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .order-input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid black;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            background: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: black;
+            font-weight: bold;
+            padding: 40px 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid black;
+            background: var(--bg-pink);
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid black;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            background: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: #f0f0f0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border: 3px solid black;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+        }
+
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: black;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid black;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .drag-handle {
+            cursor: move;
+            margin-right: 10px;
+            color: black;
+            font-weight: bold;
+        }
+
+        /* URL Grid Layouts */
+        .urls-container {
+            margin-top: 15px;
+        }
+
+        .url-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .url-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .url-card {
+            background: white;
+            border: 1px solid black;
+            padding: 12px;
+            text-align: center;
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .url-card:hover {
+            background: var(--bg-purple);
+        }
+
+        .url-card-title {
+            font-weight: bold;
+            color: var(--main-blue);
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+
+        .url-card-title:hover {
+            text-decoration: underline;
+        }
+
+        .url-card-labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .url-card-label {
+            font-size: 0.7rem;
+            padding: 1px 4px;
+            border: 1px solid var(--main-purple);
+            color: var(--main-purple);
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .url-card-actions {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .url-card:hover .url-card-actions {
+            opacity: 1;
+        }
+
+        .url-card-edit-btn {
+            background: var(--main-purple);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        /* Right Drawer */
+        .drawer-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+        }
+
+        .drawer-backdrop.show {
+            display: flex;
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: white;
+            border-left: 3px solid black;
+            transition: right 0.3s ease;
+            z-index: 1001;
+            overflow-y: auto;
+        }
+
+        .drawer.show {
+            right: 0;
+        }
+
+        .drawer-header {
+            padding: 20px;
+            border-bottom: 2px solid var(--main-blue);
+            background: var(--bg-blue);
+        }
+
+        .drawer-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: black;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .drawer-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--main-red);
+            font-weight: bold;
+        }
+
+        .drawer-content {
+            padding: 20px;
+        }
+
+        .drawer-section {
+            margin-bottom: 25px;
+        }
+
+        .drawer-section-title {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            color: var(--main-blue);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i data-lucide="link" class="lucide-icon-large icon-link"></i> URL Dashboard</h1>
+            <p>Organize and manage your favorite URLs with custom labels and groups</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="main-content">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search URLs and labels..." id="searchInput">
+                </div>
+
+                <div id="groupsContainer">
+                    <!-- Groups will be rendered here -->
+                </div>
+
+                <div id="emptyState" class="empty-state card">
+                    <p>No groups created yet. Create your first group to get started!</p>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="card">
+                    <h3 style="margin-bottom: 15px; color: #333;">Quick Actions</h3>
+                    <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="openGroupModal()"><i data-lucide="plus" class="lucide-icon icon-plus"></i> Create Group</button>
+                    <button class="btn btn-success" style="width: 100%; margin-bottom: 10px;" onclick="openUrlModal()"><i data-lucide="plus" class="lucide-icon icon-plus"></i> Add URL</button>
+                    <button class="btn btn-secondary" style="width: 100%;" onclick="exportData()"><i data-lucide="upload" class="lucide-icon icon-upload"></i> Export Data</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData()">
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 10px;" onclick="document.getElementById('importFile').click()"><i data-lucide="download" class="lucide-icon icon-download"></i> Import Data</button>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: 15px; color: #333;">Statistics</h3>
+                    <p id="stats">Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Drawer for URL Editing -->
+    <div id="drawerBackdrop" class="drawer-backdrop">
+        <div id="urlDrawer" class="drawer">
+            <div class="drawer-header">
+                <h2 class="drawer-title">Edit URL</h2>
+                <button class="drawer-close" onclick="closeUrlDrawer()">&times;</button>
+            </div>
+            <div class="drawer-content">
+                <form id="drawerUrlForm">
+                    <div class="drawer-section">
+                        <div class="form-group">
+                            <label for="drawerUrlTitle">URL Title</label>
+                            <input type="text" id="drawerUrlTitle" required>
+                        </div>
+                    </div>
+
+                    <div class="drawer-section">
+                        <div class="form-group">
+                            <label for="drawerUrlAddress">URL Address</label>
+                            <input type="url" id="drawerUrlAddress" required>
+                        </div>
+                    </div>
+
+                    <div class="drawer-section">
+                        <div class="form-group">
+                            <label for="drawerUrlLabels">Labels (comma separated)</label>
+                            <input type="text" id="drawerUrlLabels" placeholder="work, productivity, search">
+                        </div>
+                    </div>
+
+                    <div class="drawer-section">
+                        <div class="form-group">
+                            <label for="drawerUrlGroup">Group</label>
+                            <select id="drawerUrlGroup" required>
+                                <option value="">Select a group...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="drawer-section">
+                        <div class="form-group">
+                            <label for="drawerUrlOrder">Order (within group)</label>
+                            <input type="number" id="drawerUrlOrder" value="0">
+                        </div>
+                    </div>
+
+                    <div class="drawer-section">
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+                            <button type="button" class="btn btn-danger" onclick="deleteCurrentUrl()">Delete URL</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Group Modal -->
+    <div id="groupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="groupModalTitle">Create Group</h2>
+                <button class="modal-close" onclick="closeGroupModal()">&times;</button>
+            </div>
+            <form id="groupForm">
+                <div class="form-group">
+                    <label for="groupTitle">Group Title</label>
+                    <input type="text" id="groupTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="groupOrder">Order (lower numbers appear first)</label>
+                    <input type="number" id="groupOrder" value="0">
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary">Save Group</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeGroupModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- URL Modal -->
+    <div id="urlModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="urlModalTitle">Add URL</h2>
+                <button class="modal-close" onclick="closeUrlModal()">&times;</button>
+            </div>
+            <form id="urlForm">
+                <div class="form-group">
+                    <label for="urlTitle">URL Title</label>
+                    <input type="text" id="urlTitle" placeholder="e.g., Google" required>
+                </div>
+                <div class="form-group">
+                    <label for="urlAddress">URL Address</label>
+                    <input type="url" id="urlAddress" placeholder="https://example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="urlLabels">Labels (comma separated)</label>
+                    <input type="text" id="urlLabels" placeholder="work, productivity, search">
+                </div>
+                <div class="form-group">
+                    <label for="urlGroup">Group</label>
+                    <select id="urlGroup" required>
+                        <option value="">Select a group...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="urlOrder">Order (within group)</label>
+                    <input type="number" id="urlOrder" value="0">
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary">Save URL</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeUrlModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data structure
+        let groups = JSON.parse(localStorage.getItem('urlDashboard_groups') || '[]');
+        let urls = JSON.parse(localStorage.getItem('urlDashboard_urls') || '[]');
+        let currentEditingGroup = null;
+        let currentEditingUrl = null;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            renderGroups();
+            updateStats();
+
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', filterUrls);
+
+            // Form submissions
+            document.getElementById('groupForm').addEventListener('submit', handleGroupSubmit);
+            document.getElementById('urlForm').addEventListener('submit', handleUrlSubmit);
+            document.getElementById('drawerUrlForm').addEventListener('submit', handleDrawerUrlSubmit);
+
+            // Drawer backdrop click to close
+            document.getElementById('drawerBackdrop').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeUrlDrawer();
+                }
+            });
+        });
+
+        function renderGroups() {
+            const container = document.getElementById('groupsContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (groups.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            // Sort groups by order
+            const sortedGroups = [...groups].sort((a, b) => a.order - b.order);
+
+            container.innerHTML = sortedGroups.map(group => {
+                const groupUrls = urls
+                    .filter(url => url.groupId === group.id)
+                    .sort((a, b) => a.order - b.order);
+
+                return `
+                    <div class="group-card" data-group-id="${group.id}">
+                        <div class="group-header">
+                            <div style="display: flex; align-items: center;">
+                                <span class="drag-handle">⋮⋮</span>
+                                <h3 class="group-title">${escapeHtml(group.title)}</h3>
+                            </div>
+                            <div class="group-actions">
+                                <button class="btn btn-small btn-success" onclick="openUrlModalForGroup('${group.id}')"><i data-lucide="plus" class="lucide-icon icon-plus"></i> ADD URL</button>
+                                <input type="number" class="order-input" value="${group.order}" onchange="updateGroupOrder('${group.id}', this.value)">
+                                <button class="btn btn-small btn-secondary" onclick="editGroup('${group.id}')"><i data-lucide="edit" class="lucide-icon icon-edit"></i></button>
+                                <button class="btn btn-small btn-danger" onclick="deleteGroup('${group.id}')"><i data-lucide="trash-2" class="lucide-icon icon-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="urls-container">
+                            ${groupUrls.length === 0 ?
+                                '<div class="empty-state" style="padding: 20px;"><p>No URLs in this group yet.</p></div>' :
+                                (() => {
+                                    const firstTwoUrls = groupUrls.slice(0, 2);
+                                    const remainingUrls = groupUrls.slice(2);
+
+                                    let html = '';
+
+                                    // First 2 URLs in 2-column grid
+                                    if (firstTwoUrls.length > 0) {
+                                        html += '<div class="url-grid-2">';
+                                        html += firstTwoUrls.map(url => `
+                                            <div class="url-card" data-url-id="${url.id}">
+                                                <a href="${escapeHtml(url.address)}" target="_blank" class="url-card-title">${escapeHtml(url.title)}</a>
+                                                ${url.labels && url.labels.length > 0 ? `
+                                                    <div class="url-card-labels">
+                                                        ${url.labels.slice(0, 2).map(label => `<span class="url-card-label">${escapeHtml(label.trim())}</span>`).join('')}
+                                                        ${url.labels.length > 2 ? '<span class="url-card-label">+' + (url.labels.length - 2) + '</span>' : ''}
+                                                    </div>
+                                                ` : '<div class="url-card-labels"></div>'}
+                                                <div class="url-card-actions">
+                                                    <button class="url-card-edit-btn" onclick="openUrlDrawer('${url.id}')">
+                                                        <i data-lucide="edit" style="width: 12px; height: 12px;"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        `).join('');
+                                        html += '</div>';
+                                    }
+
+                                    // Remaining URLs in 4-column compact grid
+                                    if (remainingUrls.length > 0) {
+                                        html += '<div class="url-grid-4">';
+                                        html += remainingUrls.map(url => `
+                                            <div class="url-card" data-url-id="${url.id}">
+                                                <a href="${escapeHtml(url.address)}" target="_blank" class="url-card-title">${escapeHtml(url.title)}</a>
+                                                ${url.labels && url.labels.length > 0 ? `
+                                                    <div class="url-card-labels">
+                                                        ${url.labels.slice(0, 1).map(label => `<span class="url-card-label">${escapeHtml(label.trim())}</span>`).join('')}
+                                                        ${url.labels.length > 1 ? '<span class="url-card-label">+' + (url.labels.length - 1) + '</span>' : ''}
+                                                    </div>
+                                                ` : '<div class="url-card-labels"></div>'}
+                                                <div class="url-card-actions">
+                                                    <button class="url-card-edit-btn" onclick="openUrlDrawer('${url.id}')">
+                                                        <i data-lucide="edit" style="width: 12px; height: 12px;"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        `).join('');
+                                        html += '</div>';
+                                    }
+
+                                    return html;
+                                })()
+                            }
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Initialize drag and drop for groups
+            initializeDragAndDrop();
+        }
+
+        function initializeDragAndDrop() {
+            // Simple drag and drop implementation
+            let draggedElement = null;
+            let placeholder = null;
+
+            document.querySelectorAll('.group-card .drag-handle').forEach(handle => {
+                handle.addEventListener('mousedown', function(e) {
+                    draggedElement = this.closest('.group-card');
+                    draggedElement.style.opacity = '0.5';
+                    placeholder = document.createElement('div');
+                    placeholder.style.height = draggedElement.offsetHeight + 'px';
+                    placeholder.style.background = 'rgba(0,0,0,0.1)';
+                    placeholder.style.borderRadius = '12px';
+                    placeholder.style.marginBottom = '20px';
+                });
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (draggedElement) {
+                    const groupsContainer = document.getElementById('groupsContainer');
+                    const rect = groupsContainer.getBoundingClientRect();
+                    const y = e.clientY - rect.top;
+
+                    // Find the insertion point
+                    const cards = Array.from(groupsContainer.children);
+                    let insertIndex = cards.length;
+
+                    for (let i = 0; i < cards.length; i++) {
+                        const card = cards[i];
+                        if (card !== draggedElement && card !== placeholder) {
+                            const cardRect = card.getBoundingClientRect();
+                            const cardTop = cardRect.top - rect.top;
+                            const cardHeight = cardRect.height;
+
+                            if (y < cardTop + cardHeight / 2) {
+                                insertIndex = i;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Insert placeholder
+                    if (placeholder.parentNode) {
+                        placeholder.parentNode.removeChild(placeholder);
+                    }
+
+                    if (insertIndex >= cards.length) {
+                        groupsContainer.appendChild(placeholder);
+                    } else {
+                        groupsContainer.insertBefore(placeholder, cards[insertIndex]);
+                    }
+                }
+            });
+
+            document.addEventListener('mouseup', function() {
+                if (draggedElement && placeholder) {
+                    // Move the element to placeholder position
+                    const groupsContainer = document.getElementById('groupsContainer');
+                    groupsContainer.replaceChild(draggedElement, placeholder);
+                    draggedElement.style.opacity = '1';
+
+                    // Update order in data
+                    const cards = Array.from(groupsContainer.children);
+                    cards.forEach((card, index) => {
+                        const groupId = card.getAttribute('data-group-id');
+                        if (groupId) {
+                            const group = groups.find(g => g.id === groupId);
+                            if (group) {
+                                group.order = index;
+                            }
+                        }
+                    });
+
+                    saveData();
+                    renderGroups();
+                }
+                draggedElement = null;
+                placeholder = null;
+            });
+        }
+
+        function filterUrls() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            if (!searchTerm) {
+                document.querySelectorAll('.url-item').forEach(item => {
+                    item.style.display = 'block';
+                });
+                document.querySelectorAll('.group-card').forEach(card => {
+                    card.style.display = 'block';
+                });
+                return;
+            }
+
+            document.querySelectorAll('.url-item').forEach(item => {
+                const title = item.querySelector('.url-title').textContent.toLowerCase();
+                const labels = Array.from(item.querySelectorAll('.label')).map(label => label.textContent.toLowerCase());
+                const address = item.querySelector('.url-title').getAttribute('href').toLowerCase();
+
+                const matches = title.includes(searchTerm) ||
+                               labels.some(label => label.includes(searchTerm)) ||
+                               address.includes(searchTerm);
+
+                item.style.display = matches ? 'block' : 'none';
+            });
+
+            // Hide groups that have no visible URLs
+            document.querySelectorAll('.group-card').forEach(card => {
+                const visibleUrls = card.querySelectorAll('.url-item[style*="block"], .url-item:not([style*="none"])');
+                const hasVisibleUrls = visibleUrls.length > 0;
+                card.style.display = hasVisibleUrls ? 'block' : 'none';
+            });
+        }
+
+        function openGroupModal(groupId = null) {
+            const modal = document.getElementById('groupModal');
+            const title = document.getElementById('groupModalTitle');
+            const form = document.getElementById('groupForm');
+
+            currentEditingGroup = groupId;
+
+            if (groupId) {
+                const group = groups.find(g => g.id === groupId);
+                title.textContent = 'Edit Group';
+                document.getElementById('groupTitle').value = group.title;
+                document.getElementById('groupOrder').value = group.order;
+            } else {
+                title.textContent = 'Create Group';
+                form.reset();
+                document.getElementById('groupOrder').value = groups.length;
+            }
+
+            modal.classList.add('show');
+        }
+
+        function closeGroupModal() {
+            document.getElementById('groupModal').classList.remove('show');
+            currentEditingGroup = null;
+        }
+
+        function openUrlModal(urlId = null) {
+            const modal = document.getElementById('urlModal');
+            const title = document.getElementById('urlModalTitle');
+            const form = document.getElementById('urlForm');
+            const groupSelect = document.getElementById('urlGroup');
+
+            currentEditingUrl = urlId;
+
+            // Populate group select
+            groupSelect.innerHTML = '<option value="">Select a group...</option>';
+            groups.forEach(group => {
+                groupSelect.innerHTML += `<option value="${group.id}">${escapeHtml(group.title)}</option>`;
+            });
+
+            if (urlId) {
+                const url = urls.find(u => u.id === urlId);
+                title.textContent = 'Edit URL';
+                document.getElementById('urlTitle').value = url.title;
+                document.getElementById('urlAddress').value = url.address;
+                document.getElementById('urlLabels').value = url.labels ? url.labels.join(', ') : '';
+                document.getElementById('urlGroup').value = url.groupId;
+                document.getElementById('urlOrder').value = url.order;
+            } else {
+                title.textContent = 'Add URL';
+                form.reset();
+                document.getElementById('urlOrder').value = '0';
+            }
+
+            modal.classList.add('show');
+        }
+
+        function openUrlModalForGroup(groupId) {
+            const modal = document.getElementById('urlModal');
+            const title = document.getElementById('urlModalTitle');
+            const form = document.getElementById('urlForm');
+            const groupSelect = document.getElementById('urlGroup');
+
+            currentEditingUrl = null;
+
+            // Populate group select
+            groupSelect.innerHTML = '<option value="">Select a group...</option>';
+            groups.forEach(group => {
+                const selected = group.id === groupId ? ' selected' : '';
+                groupSelect.innerHTML += `<option value="${group.id}"${selected}>${escapeHtml(group.title)}</option>`;
+            });
+
+            title.textContent = 'Add URL';
+            form.reset();
+            document.getElementById('urlOrder').value = '0';
+
+            modal.classList.add('show');
+        }
+
+        function closeUrlModal() {
+            document.getElementById('urlModal').classList.remove('show');
+            currentEditingUrl = null;
+        }
+
+        function openUrlDrawer(urlId) {
+            const drawer = document.getElementById('urlDrawer');
+            const backdrop = document.getElementById('drawerBackdrop');
+            const form = document.getElementById('drawerUrlForm');
+            const groupSelect = document.getElementById('drawerUrlGroup');
+
+            currentEditingUrl = urlId;
+
+            // Populate group select
+            groupSelect.innerHTML = '<option value="">Select a group...</option>';
+            groups.forEach(group => {
+                groupSelect.innerHTML += `<option value="${group.id}">${escapeHtml(group.title)}</option>`;
+            });
+
+            if (urlId) {
+                const url = urls.find(u => u.id === urlId);
+                document.getElementById('drawerUrlTitle').value = url.title;
+                document.getElementById('drawerUrlAddress').value = url.address;
+                document.getElementById('drawerUrlLabels').value = url.labels ? url.labels.join(', ') : '';
+                document.getElementById('drawerUrlGroup').value = url.groupId;
+                document.getElementById('drawerUrlOrder').value = url.order;
+            }
+
+            backdrop.classList.add('show');
+            setTimeout(() => drawer.classList.add('show'), 10);
+        }
+
+        function closeUrlDrawer() {
+            const drawer = document.getElementById('urlDrawer');
+            const backdrop = document.getElementById('drawerBackdrop');
+
+            drawer.classList.remove('show');
+            setTimeout(() => backdrop.classList.remove('show'), 300);
+            currentEditingUrl = null;
+        }
+
+        function deleteCurrentUrl() {
+            if (currentEditingUrl && confirm('Are you sure you want to delete this URL?')) {
+                urls = urls.filter(u => u.id !== currentEditingUrl);
+                saveData();
+                renderGroups();
+                updateStats();
+                closeUrlDrawer();
+            }
+        }
+
+        function handleGroupSubmit(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('groupTitle').value.trim();
+            const order = parseInt(document.getElementById('groupOrder').value) || 0;
+
+            if (currentEditingGroup) {
+                const group = groups.find(g => g.id === currentEditingGroup);
+                group.title = title;
+                group.order = order;
+            } else {
+                const newGroup = {
+                    id: generateId(),
+                    title: title,
+                    order: order
+                };
+                groups.push(newGroup);
+            }
+
+            saveData();
+            renderGroups();
+            updateStats();
+            closeGroupModal();
+        }
+
+        function handleUrlSubmit(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('urlTitle').value.trim();
+            const address = document.getElementById('urlAddress').value.trim();
+            const labelsText = document.getElementById('urlLabels').value.trim();
+            const groupId = document.getElementById('urlGroup').value;
+            const order = parseInt(document.getElementById('urlOrder').value) || 0;
+
+            const labels = labelsText ? labelsText.split(',').map(label => label.trim()).filter(label => label) : [];
+
+            if (currentEditingUrl) {
+                const url = urls.find(u => u.id === currentEditingUrl);
+                url.title = title;
+                url.address = address;
+                url.labels = labels;
+                url.groupId = groupId;
+                url.order = order;
+            } else {
+                const newUrl = {
+                    id: generateId(),
+                    title: title,
+                    address: address,
+                    labels: labels,
+                    groupId: groupId,
+                    order: order
+                };
+                urls.push(newUrl);
+            }
+
+            saveData();
+            renderGroups();
+            updateStats();
+            closeUrlModal();
+        }
+
+        function handleDrawerUrlSubmit(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('drawerUrlTitle').value.trim();
+            const address = document.getElementById('drawerUrlAddress').value.trim();
+            const labelsText = document.getElementById('drawerUrlLabels').value.trim();
+            const groupId = document.getElementById('drawerUrlGroup').value;
+            const order = parseInt(document.getElementById('drawerUrlOrder').value) || 0;
+
+            const labels = labelsText ? labelsText.split(',').map(label => label.trim()).filter(label => label) : [];
+
+            if (currentEditingUrl) {
+                const url = urls.find(u => u.id === currentEditingUrl);
+                url.title = title;
+                url.address = address;
+                url.labels = labels;
+                url.groupId = groupId;
+                url.order = order;
+            }
+
+            saveData();
+            renderGroups();
+            updateStats();
+            closeUrlDrawer();
+        }
+
+        function editGroup(groupId) {
+            openGroupModal(groupId);
+        }
+
+        function deleteGroup(groupId) {
+            if (confirm('Are you sure you want to delete this group and all its URLs?')) {
+                groups = groups.filter(g => g.id !== groupId);
+                urls = urls.filter(u => u.groupId !== groupId);
+                saveData();
+                renderGroups();
+                updateStats();
+            }
+        }
+
+        function editUrl(urlId) {
+            openUrlModal(urlId);
+        }
+
+        function deleteUrl(urlId) {
+            if (confirm('Are you sure you want to delete this URL?')) {
+                urls = urls.filter(u => u.id !== urlId);
+                saveData();
+                renderGroups();
+                updateStats();
+            }
+        }
+
+        function updateGroupOrder(groupId, newOrder) {
+            const group = groups.find(g => g.id === groupId);
+            if (group) {
+                group.order = parseInt(newOrder) || 0;
+                saveData();
+                renderGroups();
+            }
+        }
+
+        function updateUrlOrder(urlId, newOrder) {
+            const url = urls.find(u => u.id === urlId);
+            if (url) {
+                url.order = parseInt(newOrder) || 0;
+                saveData();
+                renderGroups();
+            }
+        }
+
+        function updateStats() {
+            const totalGroups = groups.length;
+            const totalUrls = urls.length;
+            const totalLabels = urls.reduce((sum, url) => sum + (url.labels ? url.labels.length : 0), 0);
+
+            document.getElementById('stats').innerHTML = `
+                <strong>${totalGroups}</strong> groups<br>
+                <strong>${totalUrls}</strong> URLs<br>
+                <strong>${totalLabels}</strong> labels
+            `;
+        }
+
+        function exportData() {
+            const data = {
+                groups: groups,
+                urls: urls,
+                exportedAt: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'url-dashboard-backup.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            const file = document.getElementById('importFile').files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.groups && data.urls) {
+                        groups = data.groups;
+                        urls = data.urls;
+                        saveData();
+                        renderGroups();
+                        updateStats();
+                        alert('Data imported successfully!');
+                    } else {
+                        alert('Invalid file format');
+                    }
+                } catch (error) {
+                    alert('Error reading file: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function saveData() {
+            localStorage.setItem('urlDashboard_groups', JSON.stringify(groups));
+            localStorage.setItem('urlDashboard_urls', JSON.stringify(urls));
+        }
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialize Lucide icons
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
